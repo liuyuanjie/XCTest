@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>Xcelerator.Repositories</AssemblyName>
+    <RootNamespace>Xcelerator.Repositories</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="3.9.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xcelerator.Common\Xcelerator.Common.csproj" />
+    <ProjectReference Include="..\Xcelerator.Data\Xcelerator.Data.csproj" />
+  </ItemGroup>
+
+</Project>

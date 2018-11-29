@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>6c85807f-a96e-4e95-bc81-7921057fa347</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="AuthorizationHandler\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="3.10.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xcelerator.Data\Xcelerator.Data.csproj" />
+    <ProjectReference Include="..\Xcelerator.Repositories\Xcelerator.Repositories.csproj" />
+    <ProjectReference Include="..\Xcelerator.Server\Xcelerator.Server.csproj" />
+  </ItemGroup>
+
+</Project>
