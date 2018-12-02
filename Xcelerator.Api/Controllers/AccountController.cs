@@ -20,17 +20,17 @@ namespace Xcelerator.Api.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly IPasswordHasher<User> _passwordHasher;
         private readonly TokenAuthentication _tokenAuthentication;
 
         public AccountController(
-            UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationRole> roleManager,
-            SignInManager<ApplicationUser> signInManager,
-            IPasswordHasher<ApplicationUser> passwordHasher,
+            UserManager<User> userManager,
+            RoleManager<Role> roleManager,
+            SignInManager<User> signInManager,
+            IPasswordHasher<User> passwordHasher,
             TokenAuthentication tokenAuthentication)
         {
             _userManager = userManager;
@@ -43,7 +43,7 @@ namespace Xcelerator.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Create([FromBody] RegisterViewModel model)
         {
-            var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
+            var user = new User { UserName = model.UserName, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
@@ -76,28 +76,28 @@ namespace Xcelerator.Api.Controllers
         /// <summary>
         /// Generate JWT Token based on valid User
         /// </summary>
-        private async Task<JwtSecurityToken> GetJwtSecurityToken(ApplicationUser user)
+        private async Task<JwtSecurityToken> GetJwtSecurityToken(User user)
         {
             user = _userManager.Users.Single(x => x.Id == user.Id);
             var roleNames = await _userManager.GetRolesAsync(user);
             var permissionNames = new List<string>();
-            //user.Roles
-            //    .ToList()
-            //    .ForEach(x =>
-            //        x.Role
-            //         .Claims
-            //         .Where(c => c.ClaimType == CustomClaimTypes.Permission)
-            //         .ToList()
-            //         .ForEach(f =>
-            //         {
-            //             if (permissionNames.All(p => p != f.ClaimValue))
-            //             {
-            //                 permissionNames.Add(f.ClaimValue);
-            //             }
-            //         }));
+            user.Roles
+                .ToList()
+                .ForEach(x =>
+                    x.Role
+                     .Claims
+                     .Where(c => c.ClaimType == CustomClaimTypes.Permission)
+                     .ToList()
+                     .ForEach(f =>
+                     {
+                         if (permissionNames.All(p => p != f.ClaimValue))
+                         {
+                             permissionNames.Add(f.ClaimValue);
+                         }
+                     }));
 
             var claims = GetTokenClaims(user)
-                //.Union(user.Claims.Select(x => new Claim(x.ClaimType, x.ClaimValue)))
+                .Union(user.Claims.Select(x => new Claim(x.ClaimType, x.ClaimValue)))
                 .Union(roleNames.Select(x => new Claim(JwtClaimTypes.Role, x)))
                 .Union(permissionNames.Select(x => new Claim(CustomClaimTypes.Permission, x)));
 
@@ -110,7 +110,7 @@ namespace Xcelerator.Api.Controllers
             );
         }
 
-        private static IEnumerable<Claim> GetTokenClaims(ApplicationUser user)
+        private static IEnumerable<Claim> GetTokenClaims(User user)
         {
             //ClaimTypes
             return new List<Claim>

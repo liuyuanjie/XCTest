@@ -20,7 +20,7 @@ namespace Xcelerator.Data.Entity
         public string Description { get; set; }
 
         public virtual Audit Audit { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public virtual User User { get; set; }
 
     }
 }

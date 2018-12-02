@@ -15,7 +15,7 @@ using Xcelerator.Entity.Map;
 namespace Xcelerator.Data
 {
     public class ApplicationDbContext :
-        IdentityDbContext<ApplicationUser, ApplicationRole, int, IdentityUserClaim<int>, ApplicationUserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
+        IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public string CurrentUserId { get; set; }
         public DbSet<Audit> Audits { get; set; }
@@ -29,15 +29,47 @@ namespace Xcelerator.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            UserMap.Configure(modelBuilder.Entity<ApplicationUser>());
-            RoleMap.Configure(modelBuilder.Entity<ApplicationRole>());
-            UserRoleMap.Configure(modelBuilder.Entity<ApplicationUserRole>());
+            modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<Role>().ToTable("Role");
+            modelBuilder.Entity<UserRole>().ToTable("UserRole");
 
-            OrganizationMap.Configure(modelBuilder.Entity<Organization>());
-            TemplateMap.Configure(modelBuilder.Entity<Template>());
-            AuditMap.Configure(modelBuilder.Entity<Audit>());
-            AuditQuestionMap.Configure(modelBuilder.Entity<AuditQuestion>());
-            AuditUserMap.Configure(modelBuilder.Entity<AuditUser>());
+            modelBuilder.Entity<Role>()
+                .HasMany(r => r.Claims)
+                .WithOne()
+                .HasForeignKey(c => c.RoleId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Role>()
+                .HasMany(r => r.Users)
+                .WithOne()
+                .HasForeignKey(r => r.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Claims)
+                .WithOne()
+                .HasForeignKey(c => c.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Roles)
+                .WithOne()
+                .HasForeignKey(r => r.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+            //UserMap.Configure(modelBuilder.Entity<User>());
+            //RoleMap.Configure(modelBuilder.Entity<Role>());
+            //UserRoleMap.Configure(modelBuilder.Entity<UserRole>());
+
+            //OrganizationMap.Configure(modelBuilder.Entity<Organization>());
+            //TemplateMap.Configure(modelBuilder.Entity<Template>());
+            //AuditMap.Configure(modelBuilder.Entity<Audit>());
+            //AuditQuestionMap.Configure(modelBuilder.Entity<AuditQuestion>());
+            //AuditUserMap.Configure(modelBuilder.Entity<AuditUser>());
+            //modelBuilder.ApplyConfiguration<User>();
         }
 
         public override int SaveChanges()

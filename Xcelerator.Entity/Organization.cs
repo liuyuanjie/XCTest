@@ -15,6 +15,6 @@ namespace Xcelerator.Entity
         [MaxLength(1024)]
         public string Description { get; set; }
 
-        public virtual ICollection<ApplicationUser> Users { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

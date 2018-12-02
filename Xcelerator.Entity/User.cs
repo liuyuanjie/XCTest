@@ -6,8 +6,8 @@ using Xcelerator.Data.Entity;
 
 namespace Xcelerator.Entity
 {
-    // Add profile data for application users by adding properties to the ApplicationUser class
-    public class ApplicationUser : IdentityUser<int>, ILoggerEntity
+    // Add profile data for application users by adding properties to the User class
+    public class User : IdentityUser<int>, ILoggerEntity
     {
         [StringLength(256)]
         public string JobTitle { get; set; }
@@ -22,10 +22,10 @@ namespace Xcelerator.Entity
         public string LastModifiedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
-        public int OrganizationId { get; set; }
+        public int? OrganizationId { get; set; }
 
-        //public virtual ICollection<ApplicationUserRole> Roles { get; set; }
-        //public virtual ICollection<IdentityUserClaim<int>> Claims { get; set; }
+        public virtual ICollection<UserRole> Roles { get; set; }
+        public virtual ICollection<IdentityUserClaim<int>> Claims { get; set; }
         public virtual ICollection<AuditUser> AuditUsers { get; set; }
         public virtual ICollection<AuditQuestion> AuditQuestions { get; set; }
         public virtual Organization Organization { get; set; }

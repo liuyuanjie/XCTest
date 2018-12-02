@@ -17,11 +17,11 @@ namespace Xcelerator.Server
     public class DatabaseInitializer : IDatabaseInitializer
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly ILogger _logger;
 
-        public DatabaseInitializer(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ILogger<DatabaseInitializer> logger)
+        public DatabaseInitializer(ApplicationDbContext context, UserManager<User> userManager, RoleManager<Role> roleManager, ILogger<DatabaseInitializer> logger)
         {
             _context = context;
             _userManager = userManager;
@@ -31,7 +31,7 @@ namespace Xcelerator.Server
 
         public async Task SeedAsync()
         {
-            await _context.Database.MigrateAsync().ConfigureAwait(false);
+            //await _context.Database.MigrateAsync().ConfigureAwait(false);
             if (!_userManager.Users.Any())
             {
                 _logger.LogInformation("Generating inbuilt accounts");
@@ -62,18 +62,18 @@ namespace Xcelerator.Server
         {
             if ((await _roleManager.FindByNameAsync(roleName)) == null)
             {
-                ApplicationRole applicationRole = new ApplicationRole(roleName, description)
+                Role role = new Role(roleName, description)
                 {
-                    //Claims = claims
-                    //    .Select(x => new IdentityRoleClaim<int>
-                    //    {
-                    //        ClaimType = CustomClaimTypes.Permission,
-                    //        ClaimValue = x
-                    //    })
-                    //    .ToList()
+                    Claims = claims
+                        .Select(x => new IdentityRoleClaim<int>
+                        {
+                            ClaimType = CustomClaimTypes.Permission,
+                            ClaimValue = x
+                        })
+                        .ToList()
                 };
 
-                var result = await _roleManager.CreateAsync(applicationRole);
+                var result = await _roleManager.CreateAsync(role);
 
                 if (!result.Succeeded)
                 {
@@ -84,24 +84,24 @@ namespace Xcelerator.Server
 
         private async Task CreateUserAsync(string userName, string password, string email, string phoneNumber, string[] roles)
         {
-            ApplicationUser applicationUser = new ApplicationUser
+            User user = new User
             {
                 UserName = userName,
                 Email = email,
                 PhoneNumber = phoneNumber,
                 EmailConfirmed = true,
                 IsEnabled = true,
-                //Roles = _roleManager
-                //    .Roles
-                //    .Where(x => roles.Contains(x.Name))
-                //    .Select(x=> new ApplicationUserRole
-                //        {
-                //            RoleId = x.Id
-                //        })
-                //    .ToList()
+                Roles = _roleManager
+                    .Roles
+                    .Where(x => roles.Contains(x.Name))
+                    .Select(x => new UserRole
+                    {
+                        RoleId = x.Id
+                    })
+                    .ToList()
             };
 
-            var result = await _userManager.CreateAsync(applicationUser, password);
+            var result = await _userManager.CreateAsync(user, password);
 
             if (!result.Succeeded)
             {

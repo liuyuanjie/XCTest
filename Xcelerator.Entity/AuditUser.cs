@@ -14,6 +14,6 @@ namespace Xcelerator.Data.Entity
         public int UserId { get; set; }
 
         public virtual Audit Audit { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public virtual User User { get; set; }
     }
 }

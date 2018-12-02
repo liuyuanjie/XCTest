@@ -10,7 +10,7 @@ namespace Xcelerator.Entity.Map
 {
     public class RoleMap
     {
-        public static void Configure(EntityTypeBuilder<ApplicationRole> entityTypeBuilder)
+        public static void Configure(EntityTypeBuilder<Role> entityTypeBuilder)
         {
             // Need to use the old table name to map the entity Name.
             entityTypeBuilder.ToTable("Role");
