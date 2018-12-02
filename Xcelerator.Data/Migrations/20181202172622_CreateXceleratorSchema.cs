@@ -113,18 +113,11 @@ namespace Xcelerator.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<int>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true),
-                    ApplicationRoleId = table.Column<int>(nullable: true)
+                    ClaimValue = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_Role_ApplicationRoleId",
-                        column: x => x.ApplicationRoleId,
-                        principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AspNetRoleClaims_Role_RoleId",
                         column: x => x.RoleId,
@@ -166,18 +159,11 @@ namespace Xcelerator.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true),
-                    ApplicationUserId = table.Column<int>(nullable: true)
+                    ClaimValue = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserClaims_User_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AspNetUserClaims_User_UserId",
                         column: x => x.UserId,
@@ -207,44 +193,6 @@ namespace Xcelerator.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(nullable: false),
-                    RoleId = table.Column<int>(nullable: false),
-                    ApplicationRoleId = table.Column<int>(nullable: true),
-                    ApplicationUserId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_Role_ApplicationRoleId",
-                        column: x => x.ApplicationRoleId,
-                        principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_User_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_Role_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
@@ -265,6 +213,30 @@ namespace Xcelerator.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserRole",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(nullable: false),
+                    RoleId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRole", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_UserRole_Role_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Role",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserRole_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AuditQuestion",
                 columns: table => new
                 {
@@ -278,23 +250,24 @@ namespace Xcelerator.Data.Migrations
                     QuestionId = table.Column<int>(nullable: false),
                     AssignedUserId = table.Column<int>(nullable: false),
                     Result = table.Column<string>(maxLength: 256, nullable: true),
-                    Description = table.Column<string>(maxLength: 1024, nullable: true)
+                    Description = table.Column<string>(maxLength: 1024, nullable: true),
+                    UserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AuditQuestion", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AuditQuestion_User_AssignedUserId",
-                        column: x => x.AssignedUserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AuditQuestion_Audit_AuditId",
                         column: x => x.AuditId,
                         principalTable: "Audit",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AuditQuestion_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -328,19 +301,9 @@ namespace Xcelerator.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetRoleClaims_ApplicationRoleId",
-                table: "AspNetRoleClaims",
-                column: "ApplicationRoleId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserClaims_ApplicationUserId",
-                table: "AspNetUserClaims",
-                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -353,34 +316,19 @@ namespace Xcelerator.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_ApplicationRoleId",
-                table: "AspNetUserRoles",
-                column: "ApplicationRoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_ApplicationUserId",
-                table: "AspNetUserRoles",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_RoleId",
-                table: "AspNetUserRoles",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Audit_TemplateId",
                 table: "Audit",
                 column: "TemplateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AuditQuestion_AssignedUserId",
-                table: "AuditQuestion",
-                column: "AssignedUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AuditQuestion_AuditId",
                 table: "AuditQuestion",
                 column: "AuditId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuditQuestion_UserId",
+                table: "AuditQuestion",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AuditUser_AuditId",
@@ -415,6 +363,11 @@ namespace Xcelerator.Data.Migrations
                 name: "IX_User_OrganizationId",
                 table: "User",
                 column: "OrganizationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRole_RoleId",
+                table: "UserRole",
+                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -429,9 +382,6 @@ namespace Xcelerator.Data.Migrations
                 name: "AspNetUserLogins");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserRoles");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
@@ -441,10 +391,13 @@ namespace Xcelerator.Data.Migrations
                 name: "AuditUser");
 
             migrationBuilder.DropTable(
-                name: "Role");
+                name: "UserRole");
 
             migrationBuilder.DropTable(
                 name: "Audit");
+
+            migrationBuilder.DropTable(
+                name: "Role");
 
             migrationBuilder.DropTable(
                 name: "User");

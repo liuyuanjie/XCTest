@@ -25,8 +25,6 @@ namespace Xcelerator.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApplicationRoleId");
-
                     b.Property<string>("ClaimType");
 
                     b.Property<string>("ClaimValue");
@@ -34,8 +32,6 @@ namespace Xcelerator.Data.Migrations
                     b.Property<int>("RoleId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationRoleId");
 
                     b.HasIndex("RoleId");
 
@@ -48,8 +44,6 @@ namespace Xcelerator.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApplicationUserId");
-
                     b.Property<string>("ClaimType");
 
                     b.Property<string>("ClaimValue");
@@ -57,8 +51,6 @@ namespace Xcelerator.Data.Migrations
                     b.Property<int>("UserId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("UserId");
 
@@ -80,27 +72,6 @@ namespace Xcelerator.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserLogins");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
-                {
-                    b.Property<int>("UserId");
-
-                    b.Property<int>("RoleId");
-
-                    b.Property<int?>("ApplicationRoleId");
-
-                    b.Property<int?>("ApplicationUserId");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("ApplicationRoleId");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -144,11 +115,13 @@ namespace Xcelerator.Data.Migrations
                     b.Property<string>("Result")
                         .HasMaxLength(256);
 
+                    b.Property<int?>("UserId");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignedUserId");
-
                     b.HasIndex("AuditId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("AuditQuestion");
                 });
@@ -292,6 +265,19 @@ namespace Xcelerator.Data.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("Xcelerator.Entity.ApplicationUserRole", b =>
+                {
+                    b.Property<int>("UserId");
+
+                    b.Property<int>("RoleId");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRole");
+                });
+
             modelBuilder.Entity("Xcelerator.Entity.Audit", b =>
                 {
                     b.Property<int>("Id")
@@ -377,10 +363,6 @@ namespace Xcelerator.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Xcelerator.Entity.ApplicationRole")
-                        .WithMany("Claims")
-                        .HasForeignKey("ApplicationRoleId");
-
-                    b.HasOne("Xcelerator.Entity.ApplicationRole")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -389,10 +371,6 @@ namespace Xcelerator.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.HasOne("Xcelerator.Entity.ApplicationUser")
-                        .WithMany("Claims")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("Xcelerator.Entity.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -400,27 +378,6 @@ namespace Xcelerator.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("Xcelerator.Entity.ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
-                {
-                    b.HasOne("Xcelerator.Entity.ApplicationRole")
-                        .WithMany("Users")
-                        .HasForeignKey("ApplicationRoleId");
-
-                    b.HasOne("Xcelerator.Entity.ApplicationUser")
-                        .WithMany("Roles")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("Xcelerator.Entity.ApplicationRole")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Xcelerator.Entity.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -437,15 +394,14 @@ namespace Xcelerator.Data.Migrations
 
             modelBuilder.Entity("Xcelerator.Data.Entity.AuditQuestion", b =>
                 {
-                    b.HasOne("Xcelerator.Entity.ApplicationUser", "User")
-                        .WithMany("AuditQuestions")
-                        .HasForeignKey("AssignedUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Xcelerator.Entity.Audit", "Audit")
                         .WithMany("AuditQuestions")
                         .HasForeignKey("AuditId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Xcelerator.Entity.ApplicationUser", "User")
+                        .WithMany("AuditQuestions")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Xcelerator.Data.Entity.AuditUser", b =>
@@ -466,6 +422,19 @@ namespace Xcelerator.Data.Migrations
                     b.HasOne("Xcelerator.Entity.Organization", "Organization")
                         .WithMany("Users")
                         .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Xcelerator.Entity.ApplicationUserRole", b =>
+                {
+                    b.HasOne("Xcelerator.Entity.ApplicationRole")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Xcelerator.Entity.ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

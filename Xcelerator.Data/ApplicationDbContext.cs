@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Xcelerator.Data.Entity;
 using Xcelerator.Entity;
@@ -12,7 +14,8 @@ using Xcelerator.Entity.Map;
 
 namespace Xcelerator.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
+    public class ApplicationDbContext :
+        IdentityDbContext<ApplicationUser, ApplicationRole, int, IdentityUserClaim<int>, ApplicationUserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public string CurrentUserId { get; set; }
         public DbSet<Audit> Audits { get; set; }
@@ -28,8 +31,9 @@ namespace Xcelerator.Data
 
             UserMap.Configure(modelBuilder.Entity<ApplicationUser>());
             RoleMap.Configure(modelBuilder.Entity<ApplicationRole>());
-            OrganizationMap.Configure(modelBuilder.Entity<Organization>());
+            UserRoleMap.Configure(modelBuilder.Entity<ApplicationUserRole>());
 
+            OrganizationMap.Configure(modelBuilder.Entity<Organization>());
             TemplateMap.Configure(modelBuilder.Entity<Template>());
             AuditMap.Configure(modelBuilder.Entity<Audit>());
             AuditQuestionMap.Configure(modelBuilder.Entity<AuditQuestion>());

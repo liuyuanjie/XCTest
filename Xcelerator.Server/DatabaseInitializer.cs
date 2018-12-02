@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Xcelerator.Common;
 using Xcelerator.Common.Permissions;
 using Xcelerator.Data;
 using Xcelerator.Data.Entity;
@@ -13,20 +17,22 @@ namespace Xcelerator.Server
     public class DatabaseInitializer : IDatabaseInitializer
     {
         private readonly ApplicationDbContext _context;
-        private readonly IAccountManager _accountManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
 
-        public DatabaseInitializer(ApplicationDbContext context, IAccountManager accountManager, ILogger<DatabaseInitializer> logger)
+        public DatabaseInitializer(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ILogger<DatabaseInitializer> logger)
         {
             _context = context;
-            _accountManager = accountManager;
+            _userManager = userManager;
+            _roleManager = roleManager;
             _logger = logger;
         }
 
         public async Task SeedAsync()
         {
             await _context.Database.MigrateAsync().ConfigureAwait(false);
-            if (!await _accountManager.AnyUserAsync(null))
+            if (!_userManager.Users.Any())
             {
                 _logger.LogInformation("Generating inbuilt accounts");
 
@@ -42,11 +48,11 @@ namespace Xcelerator.Server
                 await EnsureRoleAsync(auditFacilitatorRoleName, "AuditFacilitator", ApplicationPermissionHelper.GetAuditFacilitatorPermissionValues());
                 await EnsureRoleAsync(techRoleName, "STPAMTech", new string[] { });
 
-                await CreateUserAsync("STPSystemAdmin", "Stp123$", "STP System Admin", "admin@stp.com", "+1 (123) 000-0000", new string[] { adminRoleName });
-                await CreateUserAsync("Client", "Stp123$", "Client", "client@stp.com", "+1 (123) 000-0001", new string[] { clientRoleName });
-                await CreateUserAsync("ChiefAutditor", "Stp123$", "Chief Autditor", "chief@stp.com", "+1 (123) 000-0001", new string[] { chiefAuditorRoleName });
-                await CreateUserAsync("AuditFacilitator", "Stp123$", "Audit Facilitator", "facilitator@stp.com", "+1 (123) 000-0001", new string[] { auditFacilitatorRoleName });
-                await CreateUserAsync("STPAMTech", "Stp123$", "STP AM / Tech", "techer@stp.com", "+1 (123) 000-0001", new string[] { techRoleName });
+                await CreateUserAsync("STPSystemAdmin", "Stp123$", "admin@stp.com", "+1 (123) 000-0000", new string[] { adminRoleName });
+                await CreateUserAsync("Client", "Stp123$", "client@stp.com", "+1 (123) 000-0001", new string[] { clientRoleName });
+                await CreateUserAsync("ChiefAutditor", "Stp123$", "chief@stp.com", "+1 (123) 000-0001", new string[] { chiefAuditorRoleName });
+                await CreateUserAsync("AuditFacilitator", "Stp123$", "facilitator@stp.com", "+1 (123) 000-0001", new string[] { auditFacilitatorRoleName });
+                await CreateUserAsync("STPAMTech", "Stp123$", "techer@stp.com", "+1 (123) 000-0001", new string[] { techRoleName });
 
                 _logger.LogInformation("Inbuilt account generation completed");
             }
@@ -54,20 +60,29 @@ namespace Xcelerator.Server
 
         private async Task EnsureRoleAsync(string roleName, string description, string[] claims)
         {
-            if ((await _accountManager.GetRoleByNameAsync(roleName)) == null)
+            if ((await _roleManager.FindByNameAsync(roleName)) == null)
             {
-                ApplicationRole applicationRole = new ApplicationRole(roleName, description);
-
-                var result = await _accountManager.CreateRoleAsync(applicationRole, claims);
-
-                if (!result.Item1)
+                ApplicationRole applicationRole = new ApplicationRole(roleName, description)
                 {
-                    throw new Exception($"Seeding \"{description}\" role failed. Errors: {string.Join(Environment.NewLine, result.Item2)}");
+                    //Claims = claims
+                    //    .Select(x => new IdentityRoleClaim<int>
+                    //    {
+                    //        ClaimType = CustomClaimTypes.Permission,
+                    //        ClaimValue = x
+                    //    })
+                    //    .ToList()
+                };
+
+                var result = await _roleManager.CreateAsync(applicationRole);
+
+                if (!result.Succeeded)
+                {
+                    throw new Exception($"Seeding \"{description}\" role failed. Errors: {result}");
                 }
             }
         }
 
-        private async Task<ApplicationUser> CreateUserAsync(string userName, string password, string fullName, string email, string phoneNumber, string[] roles)
+        private async Task CreateUserAsync(string userName, string password, string email, string phoneNumber, string[] roles)
         {
             ApplicationUser applicationUser = new ApplicationUser
             {
@@ -75,17 +90,23 @@ namespace Xcelerator.Server
                 Email = email,
                 PhoneNumber = phoneNumber,
                 EmailConfirmed = true,
-                IsEnabled = true
+                IsEnabled = true,
+                //Roles = _roleManager
+                //    .Roles
+                //    .Where(x => roles.Contains(x.Name))
+                //    .Select(x=> new ApplicationUserRole
+                //        {
+                //            RoleId = x.Id
+                //        })
+                //    .ToList()
             };
 
-            var result = await _accountManager.CreateUserAsync(applicationUser, roles, password);
+            var result = await _userManager.CreateAsync(applicationUser, password);
 
-            if (!result.Item1)
+            if (!result.Succeeded)
             {
-                throw new Exception($"Seeding \"{userName}\" user failed. Errors: {string.Join(Environment.NewLine, result.Item2)}");
+                throw new Exception($"Seeding \"{email}\" role failed. Errors: {result}");
             }
-
-            return applicationUser;
         }
     }
 }

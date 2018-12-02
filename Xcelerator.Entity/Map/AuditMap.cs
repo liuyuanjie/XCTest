@@ -15,27 +15,6 @@ namespace Xcelerator.Entity.Map
         {
             // Need to use the old table name to map the entity Name.
             entityTypeBuilder.ToTable("Audit");
-
-            //entityTypeBuilder
-            //    .HasMany(r => r.AuditUsers)
-            //    .WithOne()
-            //    .HasForeignKey(c => c.UserId)
-            //    .IsRequired()
-            //    .OnDelete(DeleteBehavior.Cascade);
-
-            //entityTypeBuilder
-            //    .HasOne(r => r.Template)
-            //    .WithOne()
-            //    .HasForeignKey<Audit>(c => c.TemplateId)
-            //    .IsRequired()
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //entityTypeBuilder
-            //    .HasMany(r => r.AuditQuestions)
-            //    .WithOne()
-            //    .HasForeignKey(c => c.AuditId)
-            //    .IsRequired()
-            //    .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Xcelerator.Api.Model;
 using Xcelerator.Api.Model.View;
+using Xcelerator.Common;
 using Xcelerator.Data.Entity;
 using Xcelerator.Entity;
 using Xcelerator.Server.Interfaces;
@@ -22,7 +23,6 @@ namespace Xcelerator.Api.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IAccountManager _accountManager;
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
         private readonly TokenAuthentication _tokenAuthentication;
 
@@ -30,14 +30,12 @@ namespace Xcelerator.Api.Controllers
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
-            IAccountManager accountManager,
             IPasswordHasher<ApplicationUser> passwordHasher,
             TokenAuthentication tokenAuthentication)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
-            _accountManager = accountManager;
             _passwordHasher = passwordHasher;
             _tokenAuthentication = tokenAuthentication;
         }
@@ -46,11 +44,11 @@ namespace Xcelerator.Api.Controllers
         public async Task<IActionResult> Create([FromBody] RegisterViewModel model)
         {
             var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
-            var result = await _accountManager.CreateUserAsync(user, new string[] { }, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (!result.Item1)
+            if (!result.Succeeded)
             {
-                return BadRequest(result.Item2);
+                return BadRequest(result.ToString());
             }
 
             return Ok();
@@ -59,8 +57,7 @@ namespace Xcelerator.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Token([FromBody] LoginViewModel model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Login)??
-                       await _userManager.FindByNameAsync(model.Login);
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null || _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password) != PasswordVerificationResult.Success)
             {
@@ -81,12 +78,28 @@ namespace Xcelerator.Api.Controllers
         /// </summary>
         private async Task<JwtSecurityToken> GetJwtSecurityToken(ApplicationUser user)
         {
-            user = await _accountManager.GetUserLoadRelatedAsync(user.NormalizedUserName);
-            var role = await _accountManager.GetRoleByIdAsync(user.Roles.First().RoleId.ToString());
+            user = _userManager.Users.Single(x => x.Id == user.Id);
+            var roleNames = await _userManager.GetRolesAsync(user);
+            var permissionNames = new List<string>();
+            //user.Roles
+            //    .ToList()
+            //    .ForEach(x =>
+            //        x.Role
+            //         .Claims
+            //         .Where(c => c.ClaimType == CustomClaimTypes.Permission)
+            //         .ToList()
+            //         .ForEach(f =>
+            //         {
+            //             if (permissionNames.All(p => p != f.ClaimValue))
+            //             {
+            //                 permissionNames.Add(f.ClaimValue);
+            //             }
+            //         }));
+
             var claims = GetTokenClaims(user)
-                .Union(user.Claims.Select(x => new Claim(x.ClaimType, x.ClaimValue)))
-                .Union(_userManager.GetRolesAsync(user).Result.Select(x => new Claim(JwtClaimTypes.Role, x)))
-                .Union(_roleManager.GetClaimsAsync(role).Result.Select(x => new Claim(x.Type, x.Value)));
+                //.Union(user.Claims.Select(x => new Claim(x.ClaimType, x.ClaimValue)))
+                .Union(roleNames.Select(x => new Claim(JwtClaimTypes.Role, x)))
+                .Union(permissionNames.Select(x => new Claim(CustomClaimTypes.Permission, x)));
 
             return new JwtSecurityToken(
                         _tokenAuthentication.Issuer,

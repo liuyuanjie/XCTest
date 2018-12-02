@@ -1,11 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace Xcelerator.Api.Model.View
 {
     public class LoginViewModel
     {
         [Required]
-        public string Login { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

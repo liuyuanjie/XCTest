@@ -127,7 +127,6 @@ namespace Xcelerator.Api
         private static void RegisterDependencies(IServiceCollection services)
         {
             services.AddSingleton<IAuthorizationHandler, ClaimsRequirementHandler>();
-            services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IAuditRepository, AuditRepository>();
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
