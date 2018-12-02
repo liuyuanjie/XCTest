@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Xcelerator.Data;
+using Xcelerator.Repositories.Interfaces;
 
 namespace Xcelerator.Repositories
 {

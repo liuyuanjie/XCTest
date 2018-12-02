@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Xcelerator.Data.Entity;
+using Xcelerator.Entity;
+using Xcelerator.Entity.Map;
 
 namespace Xcelerator.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
         public string CurrentUserId { get; set; }
         public DbSet<Audit> Audits { get; set; }
@@ -23,22 +26,14 @@ namespace Xcelerator.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ApplicationUser>().HasMany(u => u.Claims).WithOne().HasForeignKey(c => c.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<ApplicationUser>().HasMany(u => u.Roles).WithOne().HasForeignKey(r => r.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<ApplicationUser>().HasMany(r => r.AuditUsers).WithOne().HasForeignKey(c => c.AuditId).IsRequired().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<ApplicationUser>().HasIndex(x => x.NormalizedEmail).IsUnique();
+            UserMap.Configure(modelBuilder.Entity<ApplicationUser>());
+            RoleMap.Configure(modelBuilder.Entity<ApplicationRole>());
+            OrganizationMap.Configure(modelBuilder.Entity<Organization>());
 
-            modelBuilder.Entity<ApplicationRole>().HasMany(r => r.Claims).WithOne().HasForeignKey(c => c.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<ApplicationRole>().HasMany(r => r.Users).WithOne().HasForeignKey(r => r.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Audit>().Property(o => o.Name).HasMaxLength(500);
-            modelBuilder.Entity<Audit>().ToTable("Audit");
-            modelBuilder.Entity<Audit>().HasMany(r => r.AuditUsers).WithOne().HasForeignKey(c => c.AuditId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<AuditUser>().HasOne(r => r.User).WithMany(x => x.AuditUsers).HasForeignKey(x => x.UserId).IsRequired().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<AuditUser>().HasOne(r => r.Audit).WithMany(x => x.AuditUsers).HasForeignKey(r => r.AuditId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<AuditUser>().ToTable("AuditUser");
+            TemplateMap.Configure(modelBuilder.Entity<Template>());
+            AuditMap.Configure(modelBuilder.Entity<Audit>());
+            AuditQuestionMap.Configure(modelBuilder.Entity<AuditQuestion>());
+            AuditUserMap.Configure(modelBuilder.Entity<AuditUser>());
         }
 
         public override int SaveChanges()
@@ -57,7 +52,6 @@ namespace Xcelerator.Data
         {
             var modifiedEntries = ChangeTracker.Entries()
                 .Where(x => x.Entity is ILoggerEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
-
 
             foreach (var entry in modifiedEntries)
             {

@@ -9,8 +9,10 @@ using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Xcelerator.Common;
+using Xcelerator.Common.Permissions;
 using Xcelerator.Data;
 using Xcelerator.Data.Entity;
+using Xcelerator.Entity;
 using Xcelerator.Server.Interfaces;
 
 namespace Xcelerator.Server
@@ -58,7 +60,7 @@ namespace Xcelerator.Server
             return await _userManager.GetRolesAsync(user);
         }
 
-        public async Task<Tuple<ApplicationUser, string[]>> GetUserAndRolesAsync(string userId)
+        public async Task<Tuple<ApplicationUser, string[]>> GetUserAndRolesAsync(int userId)
         {
             var user = await _context.Users
                 .Include(u => u.Roles)
@@ -200,7 +202,7 @@ namespace Xcelerator.Server
             return true;
         }
 
-        public async Task<bool> TestCanDeleteUserAsync(string userId)
+        public async Task<bool> TestCanDeleteUserAsync(int userId)
         {
             if (await _context.Users.Where(o => o.Id == userId).AnyAsync())
                 return false;
@@ -281,7 +283,7 @@ namespace Xcelerator.Server
             if (claims == null)
                 claims = new string[] { };
 
-            string[] invalidClaims = claims.Where(c => ApplicationPermissions.GetPermissionByValue(c) == null).ToArray();
+            string[] invalidClaims = claims.Where(c => ApplicationPermissionHelper.GetPermissionByValue(c) == null).ToArray();
             if (invalidClaims.Any())
                 return Tuple.Create(false, new[] { "The following claim types are invalid: " + string.Join(", ", invalidClaims) });
 
@@ -295,7 +297,7 @@ namespace Xcelerator.Server
 
             foreach (string claim in claims.Distinct())
             {
-                result = await this._roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Permission, ApplicationPermissions.GetPermissionByValue(claim)));
+                result = await this._roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Permission, ApplicationPermissionHelper.GetPermissionByValue(claim)));
 
                 if (!result.Succeeded)
                 {
@@ -311,7 +313,7 @@ namespace Xcelerator.Server
         {
             if (claims != null)
             {
-                string[] invalidClaims = claims.Where(c => ApplicationPermissions.GetPermissionByValue(c) == null).ToArray();
+                string[] invalidClaims = claims.Where(c => ApplicationPermissionHelper.GetPermissionByValue(c) == null).ToArray();
                 if (invalidClaims.Any())
                     return Tuple.Create(false, new[] { "The following claim types are invalid: " + string.Join(", ", invalidClaims) });
             }
@@ -343,7 +345,7 @@ namespace Xcelerator.Server
                 {
                     foreach (string claim in claimsToAdd)
                     {
-                        result = await _roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Permission, ApplicationPermissions.GetPermissionByValue(claim)));
+                        result = await _roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Permission, ApplicationPermissionHelper.GetPermissionByValue(claim)));
                         if (!result.Succeeded)
                             return Tuple.Create(false, result.Errors.Select(e => e.Description).ToArray());
                     }
@@ -353,7 +355,7 @@ namespace Xcelerator.Server
             return Tuple.Create(true, new string[] { });
         }
 
-        public async Task<bool> TestCanDeleteRoleAsync(string roleId)
+        public async Task<bool> TestCanDeleteRoleAsync(int roleId)
         {
             return !await _context.UserRoles.Where(r => r.RoleId == roleId).AnyAsync();
         }

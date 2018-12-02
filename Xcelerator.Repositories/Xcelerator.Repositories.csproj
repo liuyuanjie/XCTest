@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xcelerator.Common\Xcelerator.Common.csproj" />
     <ProjectReference Include="..\Xcelerator.Data\Xcelerator.Data.csproj" />
   </ItemGroup>
 

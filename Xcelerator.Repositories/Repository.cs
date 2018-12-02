@@ -60,6 +60,11 @@ namespace Xcelerator.Repositories
             return _entities.Any(predicate);
         }
 
+        public virtual IEnumerable<TEntity> FindAll()
+        {
+            return _entities;
+        }
+
         public virtual IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
             return predicate == null ? _entities : _entities.Where(predicate);

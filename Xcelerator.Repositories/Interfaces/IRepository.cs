@@ -15,6 +15,7 @@ namespace Xcelerator.Repositories.Interfaces
         void UpdateRange(IEnumerable<TEntity> entities);
         void Remove(TEntity entity);
         void RemoveRange(IEnumerable<TEntity> entities);
+        IEnumerable<TEntity> FindAll();
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
         bool Any(Expression<Func<TEntity, bool>> predicate);
         Task<int> CountAsync();

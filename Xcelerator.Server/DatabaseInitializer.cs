@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Xcelerator.Common;
+using Xcelerator.Common.Permissions;
 using Xcelerator.Data;
 using Xcelerator.Data.Entity;
-using Xcelerator.Server.Interface;
+using Xcelerator.Entity;
 using Xcelerator.Server.Interfaces;
 
 namespace Xcelerator.Server
@@ -36,10 +36,10 @@ namespace Xcelerator.Server
                 const string adminRoleName = "STPSystemAdmin";
                 const string techRoleName = "STPAMTech";
 
-                await EnsureRoleAsync(adminRoleName, "STPSystemAdmin", ApplicationPermissions.GetAllSTPSystemAdminValues());
-                await EnsureRoleAsync(clientRoleName, "Client", ApplicationPermissions.GetClientPermissionValues());
-                await EnsureRoleAsync(chiefAuditorRoleName, "ChiefAutditor", ApplicationPermissions.GetChiefAutditorPermissionValues());
-                await EnsureRoleAsync(auditFacilitatorRoleName, "AuditFacilitator", ApplicationPermissions.GetAuditFacilitatorPermissionValues());
+                await EnsureRoleAsync(adminRoleName, "STPSystemAdmin", ApplicationPermissionHelper.GetAllSTPSystemAdminValues());
+                await EnsureRoleAsync(clientRoleName, "Client", ApplicationPermissionHelper.GetClientPermissionValues());
+                await EnsureRoleAsync(chiefAuditorRoleName, "ChiefAutditor", ApplicationPermissionHelper.GetChiefAutditorPermissionValues());
+                await EnsureRoleAsync(auditFacilitatorRoleName, "AuditFacilitator", ApplicationPermissionHelper.GetAuditFacilitatorPermissionValues());
                 await EnsureRoleAsync(techRoleName, "STPAMTech", new string[] { });
 
                 await CreateUserAsync("STPSystemAdmin", "Stp123$", "STP System Admin", "admin@stp.com", "+1 (123) 000-0000", new string[] { adminRoleName });
@@ -72,7 +72,6 @@ namespace Xcelerator.Server
             ApplicationUser applicationUser = new ApplicationUser
             {
                 UserName = userName,
-                FullName = fullName,
                 Email = email,
                 PhoneNumber = phoneNumber,
                 EmailConfirmed = true,
