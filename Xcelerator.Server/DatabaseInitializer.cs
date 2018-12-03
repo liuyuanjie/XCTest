@@ -91,7 +91,7 @@ namespace Xcelerator.Server
                 PhoneNumber = phoneNumber,
                 EmailConfirmed = true,
                 IsEnabled = true,
-                Roles = _roleManager
+                UserRoles = _roleManager
                     .Roles
                     .Where(x => roles.Contains(x.Name))
                     .Select(x => new UserRole

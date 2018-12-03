@@ -9,7 +9,7 @@ namespace Xcelerator.Entity
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class UserRole : IdentityUserRole<int>
     {
-        public virtual Role Role { get; set; }
-        public virtual User User { get; set; }
+        //public virtual Role Role { get; set; }
+        //public virtual User User { get; set; }
     }
 }

@@ -153,6 +153,62 @@ namespace Xcelerator.Data.Migrations
                     b.ToTable("AuditUser");
                 });
 
+            modelBuilder.Entity("Xcelerator.Entity.Audit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1024);
+
+                    b.Property<string>("LastModifiedBy");
+
+                    b.Property<DateTime>("LastModifiedDate");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256);
+
+                    b.Property<int>("TemplateId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemplateId");
+
+                    b.ToTable("Audits");
+                });
+
+            modelBuilder.Entity("Xcelerator.Entity.Organization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1024);
+
+                    b.Property<string>("LastModifiedBy");
+
+                    b.Property<DateTime>("LastModifiedDate");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Organization");
+                });
+
             modelBuilder.Entity("Xcelerator.Entity.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -186,6 +242,32 @@ namespace Xcelerator.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Role");
+                });
+
+            modelBuilder.Entity("Xcelerator.Entity.Template", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1024);
+
+                    b.Property<string>("LastModifiedBy");
+
+                    b.Property<DateTime>("LastModifiedDate");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Template");
                 });
 
             modelBuilder.Entity("Xcelerator.Entity.User", b =>
@@ -235,7 +317,7 @@ namespace Xcelerator.Data.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256);
 
-                    b.Property<int>("OrganizationId");
+                    b.Property<int?>("OrganizationId");
 
                     b.Property<string>("PasswordHash");
 
@@ -278,92 +360,10 @@ namespace Xcelerator.Data.Migrations
                     b.ToTable("UserRole");
                 });
 
-            modelBuilder.Entity("Xcelerator.Entity.Audit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1024);
-
-                    b.Property<string>("LastModifiedBy");
-
-                    b.Property<DateTime>("LastModifiedDate");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256);
-
-                    b.Property<int>("TemplateId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TemplateId");
-
-                    b.ToTable("Audit");
-                });
-
-            modelBuilder.Entity("Xcelerator.Entity.Organization", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1024);
-
-                    b.Property<string>("LastModifiedBy");
-
-                    b.Property<DateTime>("LastModifiedDate");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Organization");
-                });
-
-            modelBuilder.Entity("Xcelerator.Entity.Template", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1024);
-
-                    b.Property<string>("LastModifiedBy");
-
-                    b.Property<DateTime>("LastModifiedDate");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Template");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Xcelerator.Entity.Role")
-                        .WithMany()
+                        .WithMany("Claims")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -371,7 +371,7 @@ namespace Xcelerator.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.HasOne("Xcelerator.Entity.User")
-                        .WithMany()
+                        .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -417,12 +417,19 @@ namespace Xcelerator.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Xcelerator.Entity.Audit", b =>
+                {
+                    b.HasOne("Xcelerator.Entity.Template", "Template")
+                        .WithMany()
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Xcelerator.Entity.User", b =>
                 {
                     b.HasOne("Xcelerator.Entity.Organization", "Organization")
                         .WithMany("Users")
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("OrganizationId");
                 });
 
             modelBuilder.Entity("Xcelerator.Entity.UserRole", b =>
@@ -433,17 +440,9 @@ namespace Xcelerator.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Xcelerator.Entity.User")
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Xcelerator.Entity.Audit", b =>
-                {
-                    b.HasOne("Xcelerator.Entity.Template", "Template")
-                        .WithMany()
-                        .HasForeignKey("TemplateId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

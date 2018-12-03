@@ -92,7 +92,7 @@ namespace Xcelerator.Data.Migrations
                     LastModifiedBy = table.Column<string>(maxLength: 256, nullable: true),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     LastModifiedDate = table.Column<DateTime>(nullable: false),
-                    OrganizationId = table.Column<int>(nullable: false)
+                    OrganizationId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,7 +102,7 @@ namespace Xcelerator.Data.Migrations
                         column: x => x.OrganizationId,
                         principalTable: "Organization",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -127,7 +127,7 @@ namespace Xcelerator.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Audit",
+                name: "Audits",
                 columns: table => new
                 {
                     CreatedBy = table.Column<string>(nullable: true),
@@ -142,9 +142,9 @@ namespace Xcelerator.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Audit", x => x.Id);
+                    table.PrimaryKey("PK_Audits", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Audit_Template_TemplateId",
+                        name: "FK_Audits_Template_TemplateId",
                         column: x => x.TemplateId,
                         principalTable: "Template",
                         principalColumn: "Id",
@@ -233,7 +233,7 @@ namespace Xcelerator.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -257,9 +257,9 @@ namespace Xcelerator.Data.Migrations
                 {
                     table.PrimaryKey("PK_AuditQuestion", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AuditQuestion_Audit_AuditId",
+                        name: "FK_AuditQuestion_Audits_AuditId",
                         column: x => x.AuditId,
-                        principalTable: "Audit",
+                        principalTable: "Audits",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -287,9 +287,9 @@ namespace Xcelerator.Data.Migrations
                 {
                     table.PrimaryKey("PK_AuditUser", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AuditUser_Audit_AuditId",
+                        name: "FK_AuditUser_Audits_AuditId",
                         column: x => x.AuditId,
-                        principalTable: "Audit",
+                        principalTable: "Audits",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -316,11 +316,6 @@ namespace Xcelerator.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Audit_TemplateId",
-                table: "Audit",
-                column: "TemplateId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AuditQuestion_AuditId",
                 table: "AuditQuestion",
                 column: "AuditId");
@@ -329,6 +324,11 @@ namespace Xcelerator.Data.Migrations
                 name: "IX_AuditQuestion_UserId",
                 table: "AuditQuestion",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Audits_TemplateId",
+                table: "Audits",
+                column: "TemplateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AuditUser_AuditId",
@@ -394,7 +394,7 @@ namespace Xcelerator.Data.Migrations
                 name: "UserRole");
 
             migrationBuilder.DropTable(
-                name: "Audit");
+                name: "Audits");
 
             migrationBuilder.DropTable(
                 name: "Role");

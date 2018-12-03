@@ -28,7 +28,7 @@ namespace Xcelerator.Entity
         public DateTime CreatedDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
 
-        public virtual ICollection<UserRole> Users { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<IdentityRoleClaim<int>> Claims { get; set; }
     }
 }

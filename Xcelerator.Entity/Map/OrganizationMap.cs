@@ -9,12 +9,12 @@ using Xcelerator.Data.Entity;
 
 namespace Xcelerator.Entity.Map
 {
-    public class OrganizationMap
+    public class OrganizationMap : IEntityTypeConfiguration<Organization>
     {
-        public static void Configure(EntityTypeBuilder<Organization> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<Organization> builder)
         {
-            entityTypeBuilder.ToTable("Organization");
+            // Need to use the old table name to map the entity Name.
+            builder.ToTable("Organization");
         }
     }
-
 }

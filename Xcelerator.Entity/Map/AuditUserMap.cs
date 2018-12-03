@@ -9,11 +9,12 @@ using Xcelerator.Data.Entity;
 
 namespace Xcelerator.Entity.Map
 {
-    public class AuditUserMap
+    public class AuditUserMap : IEntityTypeConfiguration<AuditUser>
     {
-        public static void Configure(EntityTypeBuilder<AuditUser> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<AuditUser> builder)
         {
-            entityTypeBuilder.ToTable("AuditUser");
+            // Need to use the old table name to map the entity Name.
+            builder.ToTable("AuditUser");
         }
     }
 }

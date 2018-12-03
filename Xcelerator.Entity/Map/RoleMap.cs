@@ -8,15 +8,25 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Xcelerator.Entity.Map
 {
-    public class RoleMap
+    public class RoleMap : IEntityTypeConfiguration<Role>
     {
-        public static void Configure(EntityTypeBuilder<Role> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<Role> builder)
         {
-            // Need to use the old table name to map the entity Name.
-            entityTypeBuilder.ToTable("Role");
+            builder.ToTable("Role");
 
-            // Need to use the old field name to map the Id property.
-            //entityTypeBuilder.Property(p => p.Id).HasColumnName("RoleId");
+            builder
+                .HasMany(r => r.Claims)
+                .WithOne()
+                .HasForeignKey(c => c.RoleId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder
+                .HasMany(r => r.UserRoles)
+                .WithOne()
+                .HasForeignKey(r => r.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

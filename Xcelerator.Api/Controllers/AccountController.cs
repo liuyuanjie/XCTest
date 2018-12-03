@@ -81,20 +81,20 @@ namespace Xcelerator.Api.Controllers
             user = _userManager.Users.Single(x => x.Id == user.Id);
             var roleNames = await _userManager.GetRolesAsync(user);
             var permissionNames = new List<string>();
-            user.Roles
-                .ToList()
-                .ForEach(x =>
-                    x.Role
-                     .Claims
-                     .Where(c => c.ClaimType == CustomClaimTypes.Permission)
-                     .ToList()
-                     .ForEach(f =>
-                     {
-                         if (permissionNames.All(p => p != f.ClaimValue))
-                         {
-                             permissionNames.Add(f.ClaimValue);
-                         }
-                     }));
+            //user.Roles
+            //    .ToList()
+            //    .ForEach(x =>
+            //        x.Role
+            //         .Claims
+            //         .Where(c => c.ClaimType == CustomClaimTypes.Permission)
+            //         .ToList()
+            //         .ForEach(f =>
+            //         {
+            //             if (permissionNames.All(p => p != f.ClaimValue))
+            //             {
+            //                 permissionNames.Add(f.ClaimValue);
+            //             }
+            //         }));
 
             var claims = GetTokenClaims(user)
                 .Union(user.Claims.Select(x => new Claim(x.ClaimType, x.ClaimValue)))

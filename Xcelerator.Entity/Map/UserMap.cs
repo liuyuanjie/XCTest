@@ -8,20 +8,34 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Xcelerator.Entity.Map
 {
-    //public class UserMap : IEntityTypeConfiguration<User>
-    //{
-    //    public void Configure(EntityTypeBuilder<User> builder)
-    //    {
-    //        builder.ToTable("User");
-    //    }
-    //}
-
-    public class UserMap
+    public class UserMap : IEntityTypeConfiguration<User>
     {
-        public static void Configure(EntityTypeBuilder<User> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<User> builder)
         {
-            // Need to use the old table name to map the entity Name.
-            entityTypeBuilder.ToTable("User");
+            builder.ToTable("User");
+
+            builder
+                .HasMany(u => u.Claims)
+                .WithOne()
+                .HasForeignKey(c => c.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder
+                .HasMany(u => u.UserRoles)
+                .WithOne()
+                .HasForeignKey(r => r.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
+
+    //public class UserMap
+    //{
+    //    public static void Configure(EntityTypeBuilder<User> entityTypeBuilder)
+    //    {
+    //        // Need to use the old table name to map the entity Name.
+    //        entityTypeBuilder.ToTable("User");
+    //    }
+    //}
 }

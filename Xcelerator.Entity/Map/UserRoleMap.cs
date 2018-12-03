@@ -8,12 +8,20 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Xcelerator.Entity.Map
 {
-    public class UserRoleMap
+    //public class UserRoleMap
+    //{
+    //    public static void Configure(EntityTypeBuilder<UserRole> entityTypeBuilder)
+    //    {
+    //        // Need to use the old table name to map the entity Name.
+    //        entityTypeBuilder.ToTable("UserRole");
+    //    }
+    //}
+
+    public class UserRoleMap : IEntityTypeConfiguration<UserRole>
     {
-        public static void Configure(EntityTypeBuilder<UserRole> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<UserRole> builder)
         {
-            // Need to use the old table name to map the entity Name.
-            entityTypeBuilder.ToTable("UserRole");
+            builder.ToTable("UserRole");
         }
     }
 }
