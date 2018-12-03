@@ -13,6 +13,6 @@ namespace Xcelerator.Model
 
         [Required]
         [MaxLength(256)]
-        public string RoleName { get; set; }
+        public string Name { get; set; }
     }
 }

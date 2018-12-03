@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace Xcelerator.Entity
@@ -23,12 +24,14 @@ namespace Xcelerator.Entity
         }
 
         public string Description { get; set; }
+        [MaxLength(50)]
         public string CreatedBy { get; set; }
+        [MaxLength(50)]
         public string LastModifiedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
 
         public virtual ICollection<UserRole> UserRoles { get; set; }
-        public virtual ICollection<IdentityRoleClaim<int>> Claims { get; set; }
+        public virtual ICollection<RoleClaim> Claims { get; set; }
     }
 }

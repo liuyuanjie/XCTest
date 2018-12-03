@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Xcelerator.Repositories.Interfaces
+namespace Xcelerator.Service.Interfaces
 {
     public interface IUnitOfWork
     {

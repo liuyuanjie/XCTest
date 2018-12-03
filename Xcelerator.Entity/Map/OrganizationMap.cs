@@ -15,6 +15,9 @@ namespace Xcelerator.Entity.Map
         {
             // Need to use the old table name to map the entity Name.
             builder.ToTable("Organization");
+
+            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.Property(e => e.LastModifiedDate).HasColumnType("datetime");
         }
     }
 }

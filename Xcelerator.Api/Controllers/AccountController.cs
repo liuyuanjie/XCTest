@@ -81,7 +81,7 @@ namespace Xcelerator.Api.Controllers
 
             var claims = GetTokenClaims(user)
                 .Union(user.Claims)
-                .Union(user.Roles.Select(x => new Claim(JwtClaimTypes.Role, x.RoleName)))
+                .Union(user.Roles.Select(x => new Claim(JwtClaimTypes.Role, x.Name)))
                 .Union(permissionClaims.Select(x => new Claim(CustomClaimTypes.Permission, x)));
 
             return new JwtSecurityToken(

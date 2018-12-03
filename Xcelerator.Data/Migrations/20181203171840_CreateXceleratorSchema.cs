@@ -12,14 +12,15 @@ namespace Xcelerator.Data.Migrations
                 name: "Organization",
                 columns: table => new
                 {
-                    CreatedBy = table.Column<string>(nullable: true),
-                    LastModifiedBy = table.Column<string>(nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    LastModifiedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
-                    Description = table.Column<string>(maxLength: 1024, nullable: true)
+                    Description = table.Column<string>(maxLength: 1024, nullable: true),
+                    SecurityStamp = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -36,10 +37,10 @@ namespace Xcelerator.Data.Migrations
                     NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    CreatedBy = table.Column<string>(nullable: true),
-                    LastModifiedBy = table.Column<string>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    LastModifiedDate = table.Column<DateTime>(nullable: false)
+                    CreatedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    LastModifiedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,18 +51,25 @@ namespace Xcelerator.Data.Migrations
                 name: "Template",
                 columns: table => new
                 {
-                    CreatedBy = table.Column<string>(nullable: true),
-                    LastModifiedBy = table.Column<string>(nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    LastModifiedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
-                    Description = table.Column<string>(maxLength: 1024, nullable: true)
+                    Description = table.Column<string>(maxLength: 1024, nullable: true),
+                    OrganizationId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Template", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Template_Organization_OrganizationId_Id",
+                        column: x => x.OrganizationId,
+                        principalTable: "Organization",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,27 +86,27 @@ namespace Xcelerator.Data.Migrations
                     PasswordHash = table.Column<string>(nullable: true),
                     SecurityStamp = table.Column<string>(nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(maxLength: 256, nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    JobTitle = table.Column<string>(maxLength: 256, nullable: true),
-                    FirstName = table.Column<string>(maxLength: 256, nullable: true),
-                    LastName = table.Column<string>(maxLength: 256, nullable: true),
+                    FirstName = table.Column<string>(maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(maxLength: 50, nullable: true),
+                    JobTitle = table.Column<string>(maxLength: 50, nullable: true),
                     IsEnabled = table.Column<bool>(nullable: false),
-                    CreatedBy = table.Column<string>(maxLength: 256, nullable: true),
-                    LastModifiedBy = table.Column<string>(maxLength: 256, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    LastModifiedDate = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    LastModifiedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     OrganizationId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Organization_OrganizationId",
+                        name: "FK_User_Organization_OrganizationId_Id",
                         column: x => x.OrganizationId,
                         principalTable: "Organization",
                         principalColumn: "Id",
@@ -106,20 +114,20 @@ namespace Xcelerator.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
+                name: "RoleClaim",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<int>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    ClaimType = table.Column<string>(maxLength: 256, nullable: true),
+                    ClaimValue = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.PrimaryKey("PK_RoleClaim", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_Role_RoleId",
+                        name: "FK_RoleClaim_Role_RoleId_Id",
                         column: x => x.RoleId,
                         principalTable: "Role",
                         principalColumn: "Id",
@@ -127,45 +135,54 @@ namespace Xcelerator.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Audits",
+                name: "Audit",
                 columns: table => new
                 {
-                    CreatedBy = table.Column<string>(nullable: true),
-                    LastModifiedBy = table.Column<string>(nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    LastModifiedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
+                    TemplateId = table.Column<int>(nullable: false),
+                    Status = table.Column<byte>(nullable: false),
                     Description = table.Column<string>(maxLength: 1024, nullable: true),
-                    TemplateId = table.Column<int>(nullable: false)
+                    OrganizationId = table.Column<int>(nullable: true),
+                    Result = table.Column<string>(maxLength: 1024, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Audits", x => x.Id);
+                    table.PrimaryKey("PK_Audit", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Audits_Template_TemplateId",
+                        name: "FK_Audit_Organization_OrganizationId_Id",
+                        column: x => x.OrganizationId,
+                        principalTable: "Organization",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Audit_Template_TemplateId_Id",
                         column: x => x.TemplateId,
                         principalTable: "Template",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserClaims",
+                name: "UserClaim",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    ClaimType = table.Column<string>(maxLength: 256, nullable: true),
+                    ClaimValue = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.PrimaryKey("PK_UserClaim", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUserClaims_User_UserId",
+                        name: "FK_UserClaim_User_UserId_Id",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -173,39 +190,19 @@ namespace Xcelerator.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserLogins",
+                name: "UserLogin",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(nullable: false),
-                    ProviderKey = table.Column<string>(nullable: false),
+                    LoginProvider = table.Column<string>(maxLength: 256, nullable: false),
+                    ProviderKey = table.Column<string>(maxLength: 256, nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.PrimaryKey("PK_UserLogin", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
-                        name: "FK_AspNetUserLogins_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserTokens",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(nullable: false),
-                    LoginProvider = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserTokens_User_UserId",
+                        name: "FK_UserLogin_User_UserId_Id",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -223,25 +220,45 @@ namespace Xcelerator.Data.Migrations
                 {
                     table.PrimaryKey("PK_UserRole", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_UserRole_Role_RoleId",
+                        name: "FK_UserRole_Role_RoleId_Id",
                         column: x => x.RoleId,
                         principalTable: "Role",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserRole_User_UserId",
+                        name: "FK_UserRole_User_UserId_Id",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserToken",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(nullable: false),
+                    LoginProvider = table.Column<string>(maxLength: 256, nullable: false),
+                    Name = table.Column<string>(maxLength: 256, nullable: false),
+                    Value = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserToken", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_UserToken_User_UserId_Id",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "AuditQuestion",
                 columns: table => new
                 {
-                    CreatedBy = table.Column<string>(nullable: true),
-                    LastModifiedBy = table.Column<string>(nullable: true),
+                    CreatedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    LastModifiedBy = table.Column<string>(maxLength: 50, nullable: true),
                     LastModifiedDate = table.Column<DateTime>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     Id = table.Column<int>(nullable: false)
@@ -250,22 +267,21 @@ namespace Xcelerator.Data.Migrations
                     QuestionId = table.Column<int>(nullable: false),
                     AssignedUserId = table.Column<int>(nullable: false),
                     Result = table.Column<string>(maxLength: 256, nullable: true),
-                    Description = table.Column<string>(maxLength: 1024, nullable: true),
-                    UserId = table.Column<int>(nullable: true)
+                    Description = table.Column<string>(maxLength: 1024, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AuditQuestion", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AuditQuestion_Audits_AuditId",
-                        column: x => x.AuditId,
-                        principalTable: "Audits",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AuditQuestion_User_UserId",
-                        column: x => x.UserId,
+                        name: "FK_AuditQuestion_User_AssignedUserId_Id",
+                        column: x => x.AssignedUserId,
                         principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AuditQuestion_Audit_AuditId_Id",
+                        column: x => x.AuditId,
+                        principalTable: "Audit",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -274,8 +290,8 @@ namespace Xcelerator.Data.Migrations
                 name: "AuditUser",
                 columns: table => new
                 {
-                    CreatedBy = table.Column<string>(nullable: true),
-                    LastModifiedBy = table.Column<string>(nullable: true),
+                    CreatedBy = table.Column<string>(maxLength: 50, nullable: true),
+                    LastModifiedBy = table.Column<string>(maxLength: 50, nullable: true),
                     LastModifiedDate = table.Column<DateTime>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     Id = table.Column<int>(nullable: false)
@@ -287,52 +303,37 @@ namespace Xcelerator.Data.Migrations
                 {
                     table.PrimaryKey("PK_AuditUser", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AuditUser_Audits_AuditId",
+                        name: "FK_AuditUser_Audit_AuditId_Id",
                         column: x => x.AuditId,
-                        principalTable: "Audits",
+                        principalTable: "Audit",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AuditUser_User_UserId",
+                        name: "FK_AuditUser_User_UserId_Id",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetRoleClaims_RoleId",
-                table: "AspNetRoleClaims",
-                column: "RoleId");
+                name: "IX_Audit_OrganizationId",
+                table: "Audit",
+                column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserClaims_UserId",
-                table: "AspNetUserClaims",
-                column: "UserId");
+                name: "IX_Audit_TemplateId",
+                table: "Audit",
+                column: "TemplateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserLogins_UserId",
-                table: "AspNetUserLogins",
-                column: "UserId");
+                name: "IX_AuditQuestion_AssignedUserId",
+                table: "AuditQuestion",
+                column: "AssignedUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AuditQuestion_AuditId",
                 table: "AuditQuestion",
-                column: "AuditId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AuditQuestion_UserId",
-                table: "AuditQuestion",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Audits_TemplateId",
-                table: "Audits",
-                column: "TemplateId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AuditUser_AuditId",
-                table: "AuditUser",
                 column: "AuditId");
 
             migrationBuilder.CreateIndex(
@@ -341,11 +342,34 @@ namespace Xcelerator.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "UX_AuditUser_AuditId_UserId",
+                table: "AuditUser",
+                columns: new[] { "AuditId", "UserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "Role",
                 column: "NormalizedName",
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleClaims_RoleId",
+                table: "RoleClaim",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Template_OrganizationId",
+                table: "Template",
+                column: "OrganizationId");
+
+            migrationBuilder.CreateIndex(
+                name: "UX_User_Email",
+                table: "User",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -365,6 +389,23 @@ namespace Xcelerator.Data.Migrations
                 column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
+                name: "UX_User_UserName",
+                table: "User",
+                column: "UserName",
+                unique: true,
+                filter: "[UserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserClaims_UserId",
+                table: "UserClaim",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogin_UserId",
+                table: "UserLogin",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRole_RoleId",
                 table: "UserRole",
                 column: "RoleId");
@@ -373,28 +414,28 @@ namespace Xcelerator.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AspNetRoleClaims");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserClaims");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserLogins");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
                 name: "AuditQuestion");
 
             migrationBuilder.DropTable(
                 name: "AuditUser");
 
             migrationBuilder.DropTable(
+                name: "RoleClaim");
+
+            migrationBuilder.DropTable(
+                name: "UserClaim");
+
+            migrationBuilder.DropTable(
+                name: "UserLogin");
+
+            migrationBuilder.DropTable(
                 name: "UserRole");
 
             migrationBuilder.DropTable(
-                name: "Audits");
+                name: "UserToken");
+
+            migrationBuilder.DropTable(
+                name: "Audit");
 
             migrationBuilder.DropTable(
                 name: "Role");

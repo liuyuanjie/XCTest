@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Xcelerator.Api.Configurations.Authorization;
 using Xcelerator.Model;
-using Xcelerator.Repositories.Interfaces;
 using Xcelerator.Service.Interfaces;
 
 namespace Xcelerator.Api.Controllers

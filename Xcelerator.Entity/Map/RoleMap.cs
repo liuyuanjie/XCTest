@@ -14,19 +14,8 @@ namespace Xcelerator.Entity.Map
         {
             builder.ToTable("Role");
 
-            builder
-                .HasMany(r => r.Claims)
-                .WithOne()
-                .HasForeignKey(c => c.RoleId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder
-                .HasMany(r => r.UserRoles)
-                .WithOne()
-                .HasForeignKey(r => r.UserId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.Property(e => e.LastModifiedDate).HasColumnType("datetime");
         }
     }
 }

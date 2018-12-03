@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcelerator.Api", "Xcelerator.Api\Xcelerator.Api.csproj", "{9A9AB243-510A-4B55-9BDB-C82859E910BA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcelerator.Repositories", "Xcelerator.Repositories\Xcelerator.Repositories.csproj", "{975C3168-F8E8-4E2C-B133-A660D1340B83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcelerator.Repository", "Xcelerator.Repository\Xcelerator.Repository.csproj", "{975C3168-F8E8-4E2C-B133-A660D1340B83}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcelerator.Data", "Xcelerator.Data\Xcelerator.Data.csproj", "{F4AF7429-F190-40E0-8D7B-D1000DF0D267}"
 EndProject

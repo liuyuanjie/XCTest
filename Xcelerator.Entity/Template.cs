@@ -14,5 +14,8 @@ namespace Xcelerator.Entity
 
         [MaxLength(1024)]
         public string Description { get; set; }
+        public int? OrganizationId { get; set; }
+        public virtual Organization Organization { get; set; }
+        public virtual ICollection<Audit> Audits { get; set; }
     }
 }

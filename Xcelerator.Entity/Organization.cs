@@ -15,6 +15,11 @@ namespace Xcelerator.Entity
         [MaxLength(1024)]
         public string Description { get; set; }
 
+        [MaxLength(50)]
+        public string SecurityStamp { get; set; }
+
         public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<Audit> Audits { get; set; }
+        public virtual ICollection<Template> Templates { get; set; }
     }
 }

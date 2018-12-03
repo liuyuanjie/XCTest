@@ -63,8 +63,8 @@ namespace Xcelerator.Service
             }
 
             var userDto = Mapper.Map<User, UserDTO>(user);
-            userDto.Roles = GetUserRoles(userDto.Id);
-            userDto.Claims = GetUserClaims(userDto.Id);
+            userDto.Roles = Mapper.Map<IEnumerable<Role>, IEnumerable<RoleDTO>>(user.UserRoles.Select(x => x.Role));
+            userDto.Claims = user.Claims.Select(x => new Claim(x.ClaimType, x.ClaimValue));
 
             return userDto;
         }

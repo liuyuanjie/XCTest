@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Xcelerator.Data;
-using Xcelerator.Repositories.Interfaces;
+using Xcelerator.Service.Interfaces;
 
-namespace Xcelerator.Repositories
+namespace Xcelerator.Service
 {
     public class UnitOfWork : IUnitOfWork
     {

@@ -6,7 +6,6 @@
         FailedToUpdateAudit = 10002,
         FailedToDeleteAudit = 10003,
 
-
         FailedToLogin = 20001,
         InvalidEmail = 20002,
     }
