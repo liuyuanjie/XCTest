@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Xcelerator.Common.Permissions
+namespace Xcelerator.Model.Permissions
 {
     public static class ApplicationPermissionHelper
     {
@@ -43,34 +43,34 @@ namespace Xcelerator.Common.Permissions
 
         static ApplicationPermissionHelper()
         {
-            List<ApplicationPermission> allPermissions = new List<ApplicationPermission>()
-                {
-                    ViewUser,
-                    CreateUser,
-                    UpdateUser,
-                    ViewRole,
-                    UpdateRole,
-                    AssignRole,
+            List<ApplicationPermission> allPermissions = new List<ApplicationPermission>
+            {
+                ViewUser,
+                CreateUser,
+                UpdateUser,
+                ViewRole,
+                UpdateRole,
+                AssignRole,
 
-                    ViewTemplateRole,
-                    CreateTemplateRole,
-                    UpdateTemplateRole,
-                    DeleteTemplateRole,
+                ViewTemplateRole,
+                CreateTemplateRole,
+                UpdateTemplateRole,
+                DeleteTemplateRole,
 
-                    ViewAuditQuestionRole,
-                    CreateAuditQuestionRole,
-                    UpdteAuditQuestionRole,
-                    DeleteAuditQuestionRole,
-                    AssignAuditQuestionRole,
+                ViewAuditQuestionRole,
+                CreateAuditQuestionRole,
+                UpdteAuditQuestionRole,
+                DeleteAuditQuestionRole,
+                AssignAuditQuestionRole,
 
-                    ViewAuditAnswerRole,
-                    CreateAuditAnswerRole,
-                    UpdateAuditAnswerRole,
-                    DeleteAuditAnswerRole,
+                ViewAuditAnswerRole,
+                CreateAuditAnswerRole,
+                UpdateAuditAnswerRole,
+                DeleteAuditAnswerRole,
 
-                    ViewReportRole,
-                    ViewSelfReportRole
-                };
+                ViewReportRole,
+                ViewSelfReportRole
+            };
 
             AllPermissions = allPermissions.AsReadOnly();
         }

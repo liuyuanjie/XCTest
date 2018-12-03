@@ -9,7 +9,7 @@ using Xcelerator.Data.Entity;
 
 namespace Xcelerator.Entity.Map
 {
-    public class TemplateMap : IEntityTypeConfiguration<Organization>
+    public class TemplateMap : IEntityTypeConfiguration<Template>
     {
         public void Configure(EntityTypeBuilder<Template> builder)
         {

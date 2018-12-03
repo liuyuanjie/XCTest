@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Xcelerator.Server.Interfaces
+namespace Xcelerator.Service.Interfaces
 {
     public interface IDatabaseInitializer
     {

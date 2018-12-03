@@ -18,7 +18,7 @@ namespace Xcelerator.Data
         IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public string CurrentUserId { get; set; }
-        public DbSet<Audit> Audits { get; set; }
+        public virtual DbSet<Audit> Audits { get; set; }
 
         public ApplicationDbContext(DbContextOptions options)
             : base(options)

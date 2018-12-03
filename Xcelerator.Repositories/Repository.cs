@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xcelerator.Data;
+using Xcelerator.Entity;
 using Xcelerator.Repositories.Interfaces;
 
 namespace Xcelerator.Repositories

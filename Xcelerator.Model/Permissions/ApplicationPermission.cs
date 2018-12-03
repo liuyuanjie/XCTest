@@ -1,4 +1,4 @@
-﻿namespace Xcelerator.Common.Permissions
+﻿namespace Xcelerator.Model.Permissions
 {
     public class ApplicationPermission
     {

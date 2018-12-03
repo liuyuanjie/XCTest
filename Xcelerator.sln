@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcelerator.Repositories", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcelerator.Data", "Xcelerator.Data\Xcelerator.Data.csproj", "{F4AF7429-F190-40E0-8D7B-D1000DF0D267}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcelerator.Server", "Xcelerator.Server\Xcelerator.Server.csproj", "{A8238A0A-1047-45E9-ACEA-96F78DEB3E50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcelerator.Service", "Xcelerator.Service\Xcelerator.Service.csproj", "{A8238A0A-1047-45E9-ACEA-96F78DEB3E50}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcelerator.Model", "Xcelerator.Model\Xcelerator.Model.csproj", "{E26F4E49-47DF-46E9-AB42-73171DE37477}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xcelerator.Entity", "Xcelerator.Entity\Xcelerator.Entity.csproj", "{25E423FE-4551-4DAB-B89F-518DC5D69072}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xcelerator.Entity", "Xcelerator.Entity\Xcelerator.Entity.csproj", "{25E423FE-4551-4DAB-B89F-518DC5D69072}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

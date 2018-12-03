@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Xcelerator.Common;
-using Xcelerator.Common.Permissions;
+using Xcelerator.Model.Permissions;
 
 namespace Xcelerator.Api.Configurations.Authorization
 {

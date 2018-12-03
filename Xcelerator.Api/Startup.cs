@@ -19,10 +19,11 @@ using Xcelerator.Api.Model;
 using Xcelerator.Data;
 using Xcelerator.Data.Entity;
 using Xcelerator.Entity;
+using Xcelerator.Model.ErrorHandler;
 using Xcelerator.Repositories;
 using Xcelerator.Repositories.Interfaces;
-using Xcelerator.Server;
-using Xcelerator.Server.Interfaces;
+using Xcelerator.Service;
+using Xcelerator.Service.Interfaces;
 
 namespace Xcelerator.Api
 {
@@ -54,8 +55,10 @@ namespace Xcelerator.Api
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            ServiceMapperConfig.Config();
+
+            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            //loggerFactory.AddDebug();
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
@@ -126,10 +129,16 @@ namespace Xcelerator.Api
 
         private static void RegisterDependencies(IServiceCollection services)
         {
-            services.AddSingleton<IAuthorizationHandler, ClaimsRequirementHandler>();
             services.AddTransient<IAuditRepository, AuditRepository>();
+
+            services.AddTransient<IAuditService, AuditService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.AddTransient<IErrorHandler, ErrorMessages>();
+            services.AddSingleton<IAuthorizationHandler, ClaimsRequirementHandler>();
+
             services.AddScoped<ModelValidationAttribute>();
         }
     }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Xcelerator.Server.Interfaces;
+using Xcelerator.Service.Interfaces;
 
 namespace Xcelerator.Api
 {

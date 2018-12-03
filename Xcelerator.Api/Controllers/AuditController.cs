@@ -2,11 +2,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Xcelerator.Api.Configurations.Authorization;
-using Xcelerator.Data.Entity;
-using Xcelerator.Entity;
+using Xcelerator.Model;
 using Xcelerator.Repositories.Interfaces;
+using Xcelerator.Service.Interfaces;
 
 namespace Xcelerator.Api.Controllers
 {
@@ -15,27 +14,27 @@ namespace Xcelerator.Api.Controllers
     public class AuditController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IAuditRepository _auditRepository;
+        private readonly IAuditService _auditService;
 
-        public AuditController(IUnitOfWork unitOfWork, IAuditRepository auditRepository)
+        public AuditController(IUnitOfWork unitOfWork, IAuditService auditService)
         {
             _unitOfWork = unitOfWork;
-            _auditRepository = auditRepository;
+            _auditService = auditService;
         }
 
         // GET: api/Audit
         [HttpGet]
-        public IEnumerable<Audit> GetAudits()
+        public IEnumerable<AuditDTO> GetAudits()
         {
-            return _auditRepository.Find(null);
+            return _auditService.FindAll();
         }
 
         // GET: api/Audit/5
         [HttpGet("{id}")]
-        [Authorize(Roles ="Client")]
+        [Authorize(Roles = "Client")]
         public async Task<IActionResult> GetAudit([FromRoute] int id)
         {
-            var audit = await _auditRepository.GetAsync(id);
+            var audit = await _auditService.GetAsync(id);
 
             if (audit == null)
             {
@@ -48,29 +47,27 @@ namespace Xcelerator.Api.Controllers
         // PUT: api/Audit/5
         [HttpPut("{id}")]
         [Authorize(Policy = Policies.RequiredAuditEditPolicy)]
-        public async Task<IActionResult> PutAudit([FromRoute] int id, [FromBody] Audit audit)
+        public async Task<IActionResult> PutAudit([FromRoute] int id, [FromBody] AuditDTO audit)
         {
             if (id != audit.Id)
             {
                 return BadRequest();
             }
 
-            _auditRepository.Update(audit);
+            _auditService.Update(audit);
 
             try
             {
                 await _unitOfWork.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
                 if (!AuditExists(id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return NoContent();
@@ -78,14 +75,14 @@ namespace Xcelerator.Api.Controllers
 
         // POST: api/Audit
         [HttpPost]
-        public async Task<IActionResult> PostAudit([FromBody] Audit audit)
+        public async Task<IActionResult> PostAudit([FromBody] AuditDTO audit)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _auditRepository.Add(audit);
+            _auditService.Add(audit);
             await _unitOfWork.SaveChangesAsync();
 
             return CreatedAtAction("GetAudit", new { id = audit.Id }, audit);
@@ -100,13 +97,13 @@ namespace Xcelerator.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var audit = await _auditRepository.GetAsync(id);
+            var audit = await _auditService.GetAsync(id);
             if (audit == null)
             {
                 return NotFound();
             }
 
-            _auditRepository.Add(audit);
+            _auditService.Add(audit);
             await _unitOfWork.SaveChangesAsync();
 
             return Ok(audit);
@@ -114,7 +111,7 @@ namespace Xcelerator.Api.Controllers
 
         private bool AuditExists(int id)
         {
-            return _auditRepository.Any(e => e.Id == id);
+            return _auditService.Any(e => e.Id == id);
         }
     }
 }

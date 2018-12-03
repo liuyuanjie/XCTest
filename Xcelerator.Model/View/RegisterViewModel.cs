@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Xcelerator.Api.Model.View
+namespace Xcelerator.Model.View
 {
     public class RegisterViewModel
     {

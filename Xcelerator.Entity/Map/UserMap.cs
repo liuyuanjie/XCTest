@@ -29,13 +29,4 @@ namespace Xcelerator.Entity.Map
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
-
-    //public class UserMap
-    //{
-    //    public static void Configure(EntityTypeBuilder<User> entityTypeBuilder)
-    //    {
-    //        // Need to use the old table name to map the entity Name.
-    //        entityTypeBuilder.ToTable("User");
-    //    }
-    //}
 }

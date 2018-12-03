@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
 
-namespace Xcelerator.Api.Model.View
+namespace Xcelerator.Model.View
 {
     public class LoginViewModel
     {

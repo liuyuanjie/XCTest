@@ -9,7 +9,7 @@ using Xcelerator.Data.Entity;
 
 namespace Xcelerator.Entity.Map
 {
-    public class AuditMap : IEntityTypeConfiguration<Role>
+    public class AuditMap : IEntityTypeConfiguration<Audit>
     {
         public void Configure(EntityTypeBuilder<Audit> builder)
         {

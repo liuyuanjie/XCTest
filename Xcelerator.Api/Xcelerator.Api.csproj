@@ -19,7 +19,7 @@
     <ProjectReference Include="..\Xcelerator.Data\Xcelerator.Data.csproj" />
     <ProjectReference Include="..\Xcelerator.Model\Xcelerator.Model.csproj" />
     <ProjectReference Include="..\Xcelerator.Repositories\Xcelerator.Repositories.csproj" />
-    <ProjectReference Include="..\Xcelerator.Server\Xcelerator.Server.csproj" />
+    <ProjectReference Include="..\Xcelerator.Service\Xcelerator.Service.csproj" />
   </ItemGroup>
 
 </Project>

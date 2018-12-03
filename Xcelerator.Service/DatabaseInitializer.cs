@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Xcelerator.Common;
-using Xcelerator.Common.Permissions;
 using Xcelerator.Data;
-using Xcelerator.Data.Entity;
 using Xcelerator.Entity;
-using Xcelerator.Server.Interfaces;
+using Xcelerator.Model.Permissions;
+using Xcelerator.Service.Interfaces;
 
-namespace Xcelerator.Server
+namespace Xcelerator.Service
 {
     public class DatabaseInitializer : IDatabaseInitializer
     {

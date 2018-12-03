@@ -10,12 +10,13 @@ namespace Xcelerator.Entity
     public class User : IdentityUser<int>, ILoggerEntity
     {
         [StringLength(256)]
-        public string JobTitle { get; set; }
-        [StringLength(256)]
         public string FirstName { get; set; }
         [StringLength(256)]
         public string LastName { get; set; }
+        [StringLength(256)]
+        public string JobTitle { get; set; }
         public bool IsEnabled { get; set; }
+
         [StringLength(256)]
         public string CreatedBy { get; set; }
         [StringLength(256)]
