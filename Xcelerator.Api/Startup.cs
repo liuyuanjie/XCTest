@@ -59,8 +59,6 @@ namespace Xcelerator.Api
             ServiceMapperConfig.Config();
 
             loggerFactory.AddLog4Net();
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

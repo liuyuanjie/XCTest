@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Xcelerator.Model.ErrorHandler;
@@ -12,14 +13,15 @@ namespace Xcelerator.Api.Configurations.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
 
-        public ErrorHandlingMiddleware(RequestDelegate next, ILogger logger)
+        public ErrorHandlingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
         {
             _next = next;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<ExceptionHandlerMiddleware>();
         }
 
         public async Task Invoke(HttpContext context)
         {
+
             try
             {
                 await _next(context);

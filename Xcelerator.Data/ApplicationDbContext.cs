@@ -41,47 +41,10 @@ namespace Xcelerator.Data
             modelBuilder.ApplyConfiguration(new RoleMap());
             modelBuilder.ApplyConfiguration(new UserMap());
             modelBuilder.ApplyConfiguration(new UserRoleMap());
-            modelBuilder.Entity<UserClaim>().ToTable("UserClaim");
-            modelBuilder.Entity<RoleClaim>().ToTable("RoleClaim");
-            modelBuilder.Entity<UserLogin>().ToTable("UserLogin");
-            modelBuilder.Entity<UserToken>().ToTable("UserToken");
-            modelBuilder.Entity<UserLogin>().ToTable("UserLogin");
-
-            modelBuilder.Entity<RoleClaim>().HasIndex(e => e.RoleId)
-                .HasName("IX_RoleClaims_RoleId");
-            modelBuilder.Entity<RoleClaim>().Property(e => e.ClaimType).HasMaxLength(256);
-            modelBuilder.Entity<RoleClaim>().Property(e => e.ClaimValue).HasMaxLength(256);
-            modelBuilder.Entity<RoleClaim>().HasOne(d => d.Role)
-                .WithMany(p => p.Claims)
-                .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK_RoleClaim_Role_RoleId_Id");
-
-            modelBuilder.Entity<UserClaim>().HasIndex(e => e.UserId)
-                .HasName("IX_UserClaims_UserId");
-            modelBuilder.Entity<UserClaim>().Property(e => e.ClaimType).HasMaxLength(256);
-            modelBuilder.Entity<UserClaim>().Property(e => e.ClaimValue).HasMaxLength(256);
-            modelBuilder.Entity<UserClaim>().HasOne(d => d.User)
-                .WithMany(p => p.Claims)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_UserClaim_User_UserId_Id");
-
-            modelBuilder.Entity<UserLogin>().HasKey(e => new { e.LoginProvider, e.ProviderKey });
-            modelBuilder.Entity<UserLogin>().HasIndex(e => e.UserId)
-                .HasName("IX_AspNetUserLogin_UserId");
-            modelBuilder.Entity<UserLogin>().Property(e => e.LoginProvider).HasMaxLength(256);
-            modelBuilder.Entity<UserLogin>().Property(e => e.ProviderKey).HasMaxLength(256);
-            modelBuilder.Entity<UserLogin>().HasOne(d => d.User)
-                .WithMany(p => p.UserLogins)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_UserLogin_User_UserId_Id");
-
-            modelBuilder.Entity<UserToken>().HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-            modelBuilder.Entity<UserToken>().Property(e => e.LoginProvider).HasMaxLength(256);
-            modelBuilder.Entity<UserToken>().Property(e => e.Name).HasMaxLength(256);
-            modelBuilder.Entity<UserToken>().HasOne(d => d.User)
-                .WithMany(p => p.UserTokens)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_UserToken_User_UserId_Id");
+            modelBuilder.ApplyConfiguration(new RoleClaimMap());
+            modelBuilder.ApplyConfiguration(new UserClaimMap());
+            modelBuilder.ApplyConfiguration(new UserLoginMap());
+            modelBuilder.ApplyConfiguration(new UserTokenMap());
 
             modelBuilder.ApplyConfiguration(new OrganizationMap());
             modelBuilder.ApplyConfiguration(new TemplateMap());
