@@ -11,16 +11,12 @@ namespace Xcelerator.Model.ErrorHandler
                 { ErrorCode.FailedToUpdateAudit, "Failed to update an audit" },
                 { ErrorCode.FailedToLogin, "Failed to login" },
                 { ErrorCode.InvalidEmail, "Invalid email" },
+                { ErrorCode.FailedToRegister, "Failed to register" }
             };
 
         public CustomException GetCustomException(ErrorCode errorCode)
         {
             return new CustomException(errorCode, _message[errorCode]);
-        }
-
-        public string GetMessage(ErrorCode errorCode)
-        {
-            return _message[errorCode];
         }
     }
 }

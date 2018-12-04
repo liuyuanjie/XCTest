@@ -46,7 +46,7 @@ namespace Xcelerator.Api.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest(result.ToString());
+                return BadRequest(_errorHandler.GetCustomException(ErrorCode.FailedToRegister).ResponeMessage);
             }
 
             return Ok();
@@ -59,15 +59,12 @@ namespace Xcelerator.Api.Controllers
 
             if (user == null)
             {
-                var exception = _errorHandler.GetCustomException(ErrorCode.InvalidEmail);
-                _logger.LogWarning(exception);
-
-                return BadRequest(exception.ToResponeMessage);
+                return BadRequest(_errorHandler.GetCustomException(ErrorCode.InvalidEmail).ResponeMessage);
             }
 
             if (_userService.VerifyHashedPassword(user, model.Password) != PasswordVerificationResult.Success)
             {
-                return BadRequest(_errorHandler.GetCustomException(ErrorCode.FailedToLogin).ToResponeMessage);
+                return BadRequest(_errorHandler.GetCustomException(ErrorCode.FailedToLogin).ResponeMessage);
             }
 
             var token = GetJwtSecurityToken(user);

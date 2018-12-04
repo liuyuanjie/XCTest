@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Xcelerator.Model.ErrorHandler;
 
 namespace Xcelerator.Api.Configurations.Middlewares
@@ -9,10 +10,12 @@ namespace Xcelerator.Api.Configurations.Middlewares
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger _logger;
 
-        public ErrorHandlingMiddleware(RequestDelegate next)
+        public ErrorHandlingMiddleware(RequestDelegate next, ILogger logger)
         {
-            this._next = next;
+            _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -27,13 +30,15 @@ namespace Xcelerator.Api.Configurations.Middlewares
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             return WriteExceptionAsync(context, exception);
         }
 
-        private static Task WriteExceptionAsync(HttpContext context, Exception exception)
+        private Task WriteExceptionAsync(HttpContext context, Exception exception)
         {
+            _logger.LogError(exception.ToString());
+
             var response = context.Response;
             response.ContentType = "application/json";
             response.StatusCode = (int)HttpStatusCode.BadRequest;

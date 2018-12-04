@@ -19,11 +19,11 @@ namespace Xcelerator.Model.ErrorHandler
             Code = code;
         }
 
-        public string ToResponeMessage => JsonConvert.SerializeObject(new { Code, Message });
+        public string ResponeMessage => JsonConvert.SerializeObject(new { Code, Message });
 
-        public static implicit operator string(CustomException exception)
+        public override string ToString()
         {
-            return $"code: {exception.Code}, message: {exception.Message}, exception: {exception.InnerException}";
+            return $"code: {Code}, message: {Message}, exception: {InnerException}";
         }
     }
 }

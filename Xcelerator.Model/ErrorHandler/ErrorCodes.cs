@@ -8,5 +8,6 @@
 
         FailedToLogin = 20001,
         InvalidEmail = 20002,
+        FailedToRegister = 20003,
     }
 }
