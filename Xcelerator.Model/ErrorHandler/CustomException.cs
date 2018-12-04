@@ -23,7 +23,7 @@ namespace Xcelerator.Model.ErrorHandler
 
         public override string ToString()
         {
-            return $"code: {Code}, message: {Message}, exception: {InnerException}";
+            return $"code: {(short)Code}, message: {Message}, exception: {InnerException}";
         }
     }
 }

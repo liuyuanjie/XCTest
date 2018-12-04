@@ -59,7 +59,6 @@ namespace Xcelerator.Api.Controllers
 
             if (user == null)
             {
-                throw _errorHandler.GetCustomException(ErrorCode.InvalidEmail);
                 return BadRequest(_errorHandler.GetCustomException(ErrorCode.InvalidEmail).ResponeMessage);
             }
 
