@@ -2,9 +2,6 @@
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using Xcelerator.Api.Model;
-using Xcelerator.Model;
 using Xcelerator.Model.ErrorHandler;
 
 namespace Xcelerator.Api.Configurations.Middlewares
@@ -41,7 +38,7 @@ namespace Xcelerator.Api.Configurations.Middlewares
             response.ContentType = "application/json";
             response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-            return exception is CustomException customException
+            return exception is CustomException
                 ? response.WriteAsync(exception.ToString())
                 : response.WriteAsync(exception.Message);
         }

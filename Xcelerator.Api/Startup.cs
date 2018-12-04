@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Xcelerator.Api.Configurations;
 using Xcelerator.Api.Configurations.Attribute;
 using Xcelerator.Api.Configurations.Authorization;
 using Xcelerator.Api.Configurations.Middlewares;
@@ -57,8 +58,9 @@ namespace Xcelerator.Api
         {
             ServiceMapperConfig.Config();
 
-            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            //loggerFactory.AddDebug();
+            loggerFactory.AddLog4Net();
+            loggerFactory.AddConsole();
+            loggerFactory.AddDebug();
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
@@ -129,17 +131,7 @@ namespace Xcelerator.Api
 
         private static void RegisterDependencies(IServiceCollection services)
         {
-            services.AddTransient<IAuditRepository, AuditRepository>();
-
-            services.AddTransient<IAuditService, AuditService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
-
-            services.AddTransient<IErrorHandler, ErrorMessages>();
-            services.AddSingleton<IAuthorizationHandler, ClaimsRequirementHandler>();
-
-            services.AddScoped<ModelValidationAttribute>();
+            InjectorBootStrapper.RegisterDependencies(services);
         }
     }
 }

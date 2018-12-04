@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Xcelerator.Api.Model;
 using Xcelerator.Common;
 using Xcelerator.Model;
@@ -23,20 +24,23 @@ namespace Xcelerator.Api.Controllers
         private readonly TokenAuthentication _tokenAuthentication;
         private readonly IErrorHandler _errorHandler;
         private readonly IUserService _userService;
+        private readonly ILogger<AccountController> _logger;
 
         public AccountController(
             IUserService userService,
             TokenAuthentication tokenAuthentication,
-            IErrorHandler errorHandler)
+            IErrorHandler errorHandler,
+            ILogger<AccountController> logger)
         {
             _userService = userService;
 
             _tokenAuthentication = tokenAuthentication;
             _errorHandler = errorHandler;
+            _logger = logger;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Create([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
             var result = await _userService.CreateAsync(model);
 
@@ -49,18 +53,21 @@ namespace Xcelerator.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Token([FromBody] LoginViewModel model)
+        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
             var user = await _userService.FindByEmailAsync(model.Email);
 
             if (user == null)
             {
-                return BadRequest(_errorHandler.GetCustomException(ErrorCode.InvalidEmail).ToString());
+                var exception = _errorHandler.GetCustomException(ErrorCode.InvalidEmail);
+                _logger.LogWarning(exception);
+
+                return BadRequest(exception.ToResponeMessage);
             }
 
             if (_userService.VerifyHashedPassword(user, model.Password) != PasswordVerificationResult.Success)
             {
-                return BadRequest(_errorHandler.GetCustomException(ErrorCode.FailedToLogin).ToString());
+                return BadRequest(_errorHandler.GetCustomException(ErrorCode.FailedToLogin).ToResponeMessage);
             }
 
             var token = GetJwtSecurityToken(user);

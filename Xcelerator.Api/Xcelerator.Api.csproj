@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="3.10.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="2.2.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" />
   </ItemGroup>
 
@@ -19,6 +20,12 @@
     <ProjectReference Include="..\Xcelerator.Data\Xcelerator.Data.csproj" />
     <ProjectReference Include="..\Xcelerator.Model\Xcelerator.Model.csproj" />
     <ProjectReference Include="..\Xcelerator.Service\Xcelerator.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
